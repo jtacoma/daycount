@@ -24,7 +24,7 @@ To get fresh code and build your own binaries, you have to install:
 Once that's done, this simple command should be enough to get daycount
 up and running:
 
-    go install github.com/jtacoma/daycount
+    go get github.com/jtacoma/daycount
 
 Alternatively, binary distributions without the above prerequisites may
 be(come) available.
