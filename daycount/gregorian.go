@@ -1,4 +1,4 @@
-package daycounts
+package daycount
 
 import (
 	"fmt"

@@ -1,5 +1,5 @@
-// Package daycounts provides types and functions to parse and count days.
-package daycounts
+// Package daycount provides types and functions to parse and count days.
+package daycount
 
 import (
 	"time"
