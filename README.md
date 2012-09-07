@@ -1,7 +1,9 @@
 go-daycount
 ===========
 
-Package **daycount** comes with an executable named **go-daycount**.
+Package **daycounts** provides functions for counting days.
+
+Command **daycount** produces information about days in a variety of formats.
 
 Installation
 ------------
@@ -20,7 +22,7 @@ Code:
     func main()
     {
         day := daycount.Parse("2012-12-21")
-        fmt.Printf(day.MayanLong)
+        fmt.Println(day.MayanLong().String())
     }
 
 Output:
