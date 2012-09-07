@@ -1,11 +1,13 @@
-go-daycount
-===========
+daycount
+========
 
 Command **daycount** produces information about days in a variety of formats.
 
 Package **daycount** provides types and functions for counting days.
 
 Package **daycount/engines** supports a variety of presentation formats for the results of daycount queries.
+
+Note that as this project is in early development, anything might change from version to version.
 
 Installation
 ------------
