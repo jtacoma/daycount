@@ -24,17 +24,21 @@ import (
 	"os"
 )
 
+var (
+	today = daycount.Today()
+	start = flag.String("d", today.Gregorian().String(),
+		"starting day")
+	count = flag.Int("c", 0,
+		"count from starting day to ending day")
+	format = flag.String("f", "text",
+		"output format (text or pdf)")
+)
+
 func getCommand() *engines.Command {
 	var err error
 	var command engines.Command
-	today := daycount.Today()
-	start := flag.String("d",
-		today.Gregorian().String(), "starting day")
-	flag.IntVar(&command.Count, "c",
-		0, "count from starting day to ending day")
-	format := flag.String("f",
-		"text", "output format (text or pdf)")
 	flag.Parse()
+	command.Count = *count
 	command.Start, err = daycount.Parse(*start)
 	if err != nil {
 		fmt.Printf("error: failed to parse: %v\n", *start)
