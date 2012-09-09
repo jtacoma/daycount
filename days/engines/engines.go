@@ -22,8 +22,8 @@ import (
 
 type Command struct {
 	Engine Engine
-	Start days.Day
-	Count int
+	Start  days.Day
+	Count  int
 }
 
 type Engine interface {
@@ -39,4 +39,25 @@ func Resolve(engineName string) Engine {
 	default:
 	}
 	return nil
+}
+
+func (c *Command) Range() []days.Day {
+	var length int
+	var step int
+	switch {
+	case c.Count < 0:
+		length = -c.Count + 1
+		step = -1
+	default:
+		length = c.Count + 1
+		step = 1
+	}
+	result := make([]days.Day, length)
+	result[0] = c.Start
+	for i := range result {
+		if i > 0 {
+			result[i] = result[i-1].Add(step)
+		}
+	}
+	return result
 }

@@ -21,6 +21,19 @@ import (
 	"time"
 )
 
+func TestDay_Add(t *testing.T) {
+	day, _ := Parse("2006-02-01")
+	after, _ := Parse("2006-02-02")
+	added := day.Add(1)
+	if added != after {
+		t.Fatalf("expected 2006-02-02 but got %v", added.Gregorian())
+	}
+	back := after.Add(-1)
+	if back != day {
+		t.Fatalf("expected 2006-02-01 but got %v", back.Gregorian())
+	}
+}
+
 func TestDay_Today(t *testing.T) {
 	before := time.Now()
 	today := Today()

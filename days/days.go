@@ -44,6 +44,14 @@ func Parse(value string) (day Day, err error) {
 	return day, err
 }
 
+// Add returns a new Day object representing the specified offset from
+// this day.
+func (self Day) Add(d int) (day Day) {
+	duration := time.Duration(int64(d) * 24 * int64(time.Hour))
+	day.time = self.time.Add(duration)
+	return day
+}
+
 // Time returns a Time struct representing a moment within this day.
 func (self Day) Time() time.Time {
 	return self.time

@@ -17,14 +17,28 @@
 package engines
 
 import (
-	"fmt"
+	"github.com/jtacoma/daycount/days"
+	"testing"
 )
 
-type TextEngine struct {
-}
-
-func (*TextEngine) Run(c Command) {
-	for i, d := range c.Range() {
-		fmt.Printf("%3d: %v\n", i, d.Gregorian())
+func TestRange(t *testing.T) {
+	c := new(Command)
+	c.Start, _ = days.Parse("2006-01-02")
+	c.Count = 3
+	r := c.Range()
+	if len(r) != 4 {
+		t.Fatalf("expected 4 results, got %v", len(r))
+	}
+	if r[0] != c.Start {
+		t.Fatal("expected %v got %v", c.Start, r[0])
+	}
+	if r[1] != c.Start.Add(1) {
+		t.Fatal("expected %v got %v", c.Start.Add(1), r[1])
+	}
+	if r[2] != c.Start.Add(2) {
+		t.Fatal("expected %v got %v", c.Start.Add(2), r[2])
+	}
+	if r[3] != c.Start.Add(3) {
+		t.Fatal("expected %v got %v", c.Start.Add(3), r[3])
 	}
 }
