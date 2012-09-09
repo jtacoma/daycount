@@ -32,6 +32,7 @@ var (
 		"count from starting day to ending day")
 	format = flag.String("f", "text",
 		"output format (text or pdf)")
+	template = flag.String("t", "", "file containing a text template.")
 )
 
 func getQuery() *views.Query {
@@ -39,13 +40,14 @@ func getQuery() *views.Query {
 	var command views.Query
 	flag.Parse()
 	command.Count = *count
+	command.Template = *template
 	command.Start, err = days.Parse(*start)
 	if err != nil {
 		fmt.Printf("error: failed to parse: %v\n", *start)
 		os.Exit(1)
 	}
-	command.Engine = views.Resolve(*format)
-	if command.Engine == nil {
+	command.View = views.Resolve(*format)
+	if command.View == nil {
 		fmt.Printf("error: unsupported format: %v\n", *format)
 		os.Exit(1)
 	}
@@ -53,8 +55,10 @@ func getQuery() *views.Query {
 }
 
 func main() {
-	c := getQuery()
-	if c != nil {
-		c.Engine.Run(*c)
+	q := getQuery()
+	err := q.View.Run(*q)
+	if err != nil {
+		fmt.Println("error:", err)
+		os.Exit(1)
 	}
 }

@@ -21,21 +21,22 @@ import (
 )
 
 type Query struct {
-	Engine Engine
-	Start  days.Day
-	Count  int
+	View     View
+	Start    days.Day
+	Count    int
+	Template string
 }
 
-type Engine interface {
-	Run(Query)
+type View interface {
+	Run(Query) error
 }
 
-func Resolve(engineName string) Engine {
-	switch engineName {
+func Resolve(viewName string) View {
+	switch viewName {
 	case "text":
-		return new(TextEngine)
+		return new(TextView)
 	case "pdf":
-		return new(PdfEngine)
+		return new(PdfView)
 	default:
 	}
 	return nil

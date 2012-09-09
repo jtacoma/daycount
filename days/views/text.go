@@ -17,14 +17,26 @@
 package views
 
 import (
-	"fmt"
+	"os"
+	"text/template"
 )
 
-type TextEngine struct {
+var simple = template.Must(
+	template.New("simple").Parse("{{range .}}{{.Gregorian}}\n{{end}}"))
+
+type TextView struct {
 }
 
-func (*TextEngine) Run(q Query) {
-	for i, d := range q.Range() {
-		fmt.Printf("%3d: %v\n", i, d.Gregorian())
+func (*TextView) Run(q Query) (err error) {
+	var t *template.Template
+	if len(q.Template) > 0 {
+		t, err = template.ParseGlob(q.Template)
+		if err != nil {
+			return err
+		}
+	} else {
+		t = simple
 	}
+	t.Execute(os.Stdout, q.Range())
+	return nil
 }

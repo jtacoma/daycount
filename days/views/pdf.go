@@ -18,14 +18,13 @@ package views
 
 import (
 	"bitbucket.org/zombiezen/gopdf/pdf"
-	"fmt"
 	"os"
 )
 
-type PdfEngine struct {
+type PdfView struct {
 }
 
-func (*PdfEngine) Run(q Query) {
+func (*PdfView) Run(q Query) error {
 	doc := pdf.New()
 	canvas := doc.NewPage(pdf.USLetterWidth, pdf.USLetterHeight)
 	canvas.Translate(0, 0)
@@ -39,8 +38,5 @@ func (*PdfEngine) Run(q Query) {
 	canvas.DrawText(text)
 	canvas.Close()
 	err := doc.Encode(os.Stdout)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	return err
 }
