@@ -73,7 +73,7 @@ func (self Gregorian) Month() int {
 }
 
 func (self Gregorian) String() string {
-	return fmt.Sprintf("%v-%v-%v",
+	return fmt.Sprintf("%v-%02v-%02v",
 		self.Year(), self.Month(), self.DayOfMonth())
 }
 
