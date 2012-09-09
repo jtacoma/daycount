@@ -14,17 +14,50 @@
 // License along with Daycount.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-package engines
+package views
 
 import (
-	"fmt"
+	"github.com/jtacoma/daycount/days"
 )
 
-type TextEngine struct {
+type Query struct {
+	Engine Engine
+	Start  days.Day
+	Count  int
 }
 
-func (*TextEngine) Run(c Command) {
-	for i, d := range c.Range() {
-		fmt.Printf("%3d: %v\n", i, d.Gregorian())
+type Engine interface {
+	Run(Query)
+}
+
+func Resolve(engineName string) Engine {
+	switch engineName {
+	case "text":
+		return new(TextEngine)
+	case "pdf":
+		return new(PdfEngine)
+	default:
 	}
+	return nil
+}
+
+func (q *Query) Range() []days.Day {
+	var length int
+	var step int
+	switch {
+	case q.Count < 0:
+		length = -q.Count + 1
+		step = -1
+	default:
+		length = q.Count + 1
+		step = 1
+	}
+	result := make([]days.Day, length)
+	result[0] = q.Start
+	for i := range result {
+		if i > 0 {
+			result[i] = result[i-1].Add(step)
+		}
+	}
+	return result
 }

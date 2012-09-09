@@ -14,50 +14,31 @@
 // License along with Daycount.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-package engines
+package views
 
 import (
 	"github.com/jtacoma/daycount/days"
+	"testing"
 )
 
-type Command struct {
-	Engine Engine
-	Start  days.Day
-	Count  int
-}
-
-type Engine interface {
-	Run(Command)
-}
-
-func Resolve(engineName string) Engine {
-	switch engineName {
-	case "text":
-		return new(TextEngine)
-	case "pdf":
-		return new(PdfEngine)
-	default:
+func TestRange(t *testing.T) {
+	q := new(Query)
+	q.Start, _ = days.Parse("2006-01-02")
+	q.Count = 3
+	r := q.Range()
+	if len(r) != 4 {
+		t.Fatalf("expected 4 results, got %v", len(r))
 	}
-	return nil
-}
-
-func (c *Command) Range() []days.Day {
-	var length int
-	var step int
-	switch {
-	case c.Count < 0:
-		length = -c.Count + 1
-		step = -1
-	default:
-		length = c.Count + 1
-		step = 1
+	if r[0] != q.Start {
+		t.Fatal("expected %v got %v", q.Start, r[0])
 	}
-	result := make([]days.Day, length)
-	result[0] = c.Start
-	for i := range result {
-		if i > 0 {
-			result[i] = result[i-1].Add(step)
-		}
+	if r[1] != q.Start.Add(1) {
+		t.Fatal("expected %v got %v", q.Start.Add(1), r[1])
 	}
-	return result
+	if r[2] != q.Start.Add(2) {
+		t.Fatal("expected %v got %v", q.Start.Add(2), r[2])
+	}
+	if r[3] != q.Start.Add(3) {
+		t.Fatal("expected %v got %v", q.Start.Add(3), r[3])
+	}
 }

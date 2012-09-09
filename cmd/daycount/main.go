@@ -20,7 +20,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/jtacoma/daycount/days"
-	"github.com/jtacoma/daycount/days/engines"
+	"github.com/jtacoma/daycount/days/views"
 	"os"
 )
 
@@ -34,9 +34,9 @@ var (
 		"output format (text or pdf)")
 )
 
-func getCommand() *engines.Command {
+func getQuery() *views.Query {
 	var err error
-	var command engines.Command
+	var command views.Query
 	flag.Parse()
 	command.Count = *count
 	command.Start, err = days.Parse(*start)
@@ -44,7 +44,7 @@ func getCommand() *engines.Command {
 		fmt.Printf("error: failed to parse: %v\n", *start)
 		os.Exit(1)
 	}
-	command.Engine = engines.Resolve(*format)
+	command.Engine = views.Resolve(*format)
 	if command.Engine == nil {
 		fmt.Printf("error: unsupported format: %v\n", *format)
 		os.Exit(1)
@@ -53,7 +53,7 @@ func getCommand() *engines.Command {
 }
 
 func main() {
-	c := getCommand()
+	c := getQuery()
 	if c != nil {
 		c.Engine.Run(*c)
 	}

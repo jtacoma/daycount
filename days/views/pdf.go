@@ -14,7 +14,7 @@
 // License along with Daycount.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-package engines
+package views
 
 import (
 	"bitbucket.org/zombiezen/gopdf/pdf"
@@ -25,7 +25,7 @@ import (
 type PdfEngine struct {
 }
 
-func (*PdfEngine) Run(c Command) {
+func (*PdfEngine) Run(q Query) {
 	doc := pdf.New()
 	canvas := doc.NewPage(pdf.USLetterWidth, pdf.USLetterHeight)
 	canvas.Translate(0, 0)
