@@ -19,13 +19,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/jtacoma/daycount/daycount"
-	"github.com/jtacoma/daycount/daycount/engines"
+	"github.com/jtacoma/daycount/days"
+	"github.com/jtacoma/daycount/days/engines"
 	"os"
 )
 
 var (
-	today = daycount.Today()
+	today = days.Today()
 	start = flag.String("d", today.Gregorian().String(),
 		"starting day")
 	count = flag.Int("c", 0,
@@ -39,7 +39,7 @@ func getCommand() *engines.Command {
 	var command engines.Command
 	flag.Parse()
 	command.Count = *count
-	command.Start, err = daycount.Parse(*start)
+	command.Start, err = days.Parse(*start)
 	if err != nil {
 		fmt.Printf("error: failed to parse: %v\n", *start)
 		os.Exit(1)

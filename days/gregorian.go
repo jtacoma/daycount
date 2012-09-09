@@ -14,7 +14,7 @@
 // License along with Daycount.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-package daycount
+package days
 
 import (
 	"fmt"

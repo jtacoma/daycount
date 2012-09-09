@@ -17,12 +17,12 @@
 package engines
 
 import (
-	"github.com/jtacoma/daycount/daycount"
+	"github.com/jtacoma/daycount/days"
 )
 
 type Command struct {
 	Engine Engine
-	Start daycount.Day
+	Start days.Day
 	Count int
 }
 

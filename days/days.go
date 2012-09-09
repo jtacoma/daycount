@@ -14,8 +14,8 @@
 // License along with Daycount.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-// Package daycount provides types and functions to parse and count days.
-package daycount
+// Package days provides types and functions to parse and count days.
+package days
 
 import (
 	"time"
