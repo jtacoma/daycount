@@ -18,25 +18,64 @@ package views
 
 import (
 	"bitbucket.org/zombiezen/gopdf/pdf"
+	"github.com/jtacoma/daycount/days"
 	"os"
 )
 
 type PdfView struct {
+	options PdfViewOptions
+	lineheight pdf.Unit
 }
 
-func (*PdfView) Run(q Query) error {
+type PdfViewOptions struct {
+	FontName string
+	FontSize pdf.Unit
+}
+
+var (
+	margin = pdf.Unit(72)
+	padding = pdf.Unit(6)
+	pagewidth = pdf.USLetterWidth
+	pageheight = pdf.USLetterHeight
+)
+
+func (v *PdfView) Run(q Query) error {
+	v.Initialize(PdfViewOptions{pdf.Helvetica, 14})
 	doc := pdf.New()
-	canvas := doc.NewPage(pdf.USLetterWidth, pdf.USLetterHeight)
-	canvas.Translate(0, 0)
-	path := new(pdf.Path)
-	path.Move(pdf.Point{0, 0})
-	path.Line(pdf.Point{100, 0})
-	canvas.Stroke(path)
-	text := new(pdf.Text)
-	text.SetFont(pdf.Helvetica, 14)
-	text.Text("Hello, World!")
-	canvas.DrawText(text)
-	canvas.Close()
+	for _, day := range q.Range() {
+		canvas := doc.NewPage(pagewidth, pageheight)
+		v.renderPage(canvas, day)
+		canvas.Close()
+	}
 	err := doc.Encode(os.Stdout)
 	return err
+}
+
+func (v *PdfView) Initialize(options PdfViewOptions) {
+	v.options = options
+	if len(options.FontName) == 0 {
+		v.options.FontName = pdf.Helvetica
+	}
+	if options.FontSize == 0 {
+		v.options.FontSize = 14
+	}
+}
+
+func (v *PdfView) renderPage(canvas *pdf.Canvas, d days.Day) {
+	// page border:
+	canvas.Translate(0, 0)
+	path := new(pdf.Path)
+	path.Move(pdf.Point{margin, margin})
+	path.Line(pdf.Point{pagewidth-margin, margin})
+	path.Line(pdf.Point{pagewidth-margin, pageheight-margin})
+	path.Line(pdf.Point{margin, pageheight-margin})
+	path.Line(pdf.Point{margin, margin})
+	canvas.Stroke(path)
+	// text
+	canvas.Translate(margin+padding,
+		pageheight-margin-padding-v.options.FontSize/1.2)
+	text := new(pdf.Text)
+	text.SetFont(v.options.FontName, v.options.FontSize)
+	text.Text(d.Gregorian().String())
+	canvas.DrawText(text)
 }
