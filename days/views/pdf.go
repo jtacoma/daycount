@@ -21,6 +21,7 @@ import (
 	"bytes"
 	"github.com/jtacoma/daycount/days"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -102,6 +103,11 @@ func (v *PdfView) renderPage(canvas *pdf.Canvas, d days.Day) {
 	v.template.Execute(&buf, d)
 	text := new(pdf.Text)
 	text.SetFont(v.options.FontName, v.options.FontSize)
-	text.Text(buf.String())
+	for i, line := range strings.Split(buf.String(), "\n") {
+		if i > 0 {
+			text.NextLine()
+		}
+		text.Text(line)
+	}
 	canvas.DrawText(text)
 }
