@@ -18,6 +18,7 @@ package views
 
 import (
 	"github.com/jtacoma/daycount/days"
+	"text/template"
 )
 
 type Query struct {
@@ -61,4 +62,13 @@ func (q *Query) Range() []days.Day {
 		}
 	}
 	return result
+}
+
+func (q *Query) LoadTemplate(ifempty *template.Template) (t *template.Template, err error) {
+	if len(q.Template) == 0 {
+		t, err = ifempty, nil
+	} else {
+		t, err = template.ParseGlob(q.Template)
+	}
+	return t, err
 }

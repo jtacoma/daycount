@@ -18,64 +18,90 @@ package views
 
 import (
 	"bitbucket.org/zombiezen/gopdf/pdf"
+	"bytes"
 	"github.com/jtacoma/daycount/days"
 	"os"
+	"text/template"
 )
 
 type PdfView struct {
-	options PdfViewOptions
-	lineheight pdf.Unit
+	options  PdfViewOptions
+	template *template.Template
 }
 
 type PdfViewOptions struct {
-	FontName string
-	FontSize pdf.Unit
+	FontName   string
+	FontSize   pdf.Unit
+	Margin     pdf.Unit
+	Padding    pdf.Unit
+	PageWidth  pdf.Unit
+	PageHeight pdf.Unit
 }
 
 var (
-	margin = pdf.Unit(72)
-	padding = pdf.Unit(6)
-	pagewidth = pdf.USLetterWidth
-	pageheight = pdf.USLetterHeight
+	pdfsimple = template.Must(template.New("simple").Parse(
+		"{{.Gregorian}}"))
 )
 
-func (v *PdfView) Run(q Query) error {
-	v.Initialize(PdfViewOptions{pdf.Helvetica, 14})
+func (v *PdfView) Set(options *PdfViewOptions) {
+	if options != nil {
+		v.options = *options
+	}
+	if len(v.options.FontName) == 0 {
+		v.options.FontName = pdf.Helvetica
+	}
+	if v.options.FontSize == 0 {
+		v.options.FontSize = 14
+	}
+	if v.options.Margin == 0 {
+		v.options.Margin = 72
+	}
+	if v.options.Padding == 0 {
+		v.options.Padding = 6
+	}
+	if v.options.PageWidth == 0 {
+		v.options.PageWidth = pdf.USLetterWidth
+	}
+	if v.options.PageHeight == 0 {
+		v.options.PageHeight = pdf.USLetterHeight
+	}
+}
+
+func (v *PdfView) Run(q Query) (err error) {
+	v.Set(nil)
+	if v.template, err = q.LoadTemplate(pdfsimple); err != nil {
+		return err
+	}
 	doc := pdf.New()
 	for _, day := range q.Range() {
-		canvas := doc.NewPage(pagewidth, pageheight)
+		canvas := doc.NewPage(v.options.PageWidth, v.options.PageHeight)
 		v.renderPage(canvas, day)
 		canvas.Close()
 	}
-	err := doc.Encode(os.Stdout)
-	return err
-}
-
-func (v *PdfView) Initialize(options PdfViewOptions) {
-	v.options = options
-	if len(options.FontName) == 0 {
-		v.options.FontName = pdf.Helvetica
-	}
-	if options.FontSize == 0 {
-		v.options.FontSize = 14
-	}
+	return doc.Encode(os.Stdout)
 }
 
 func (v *PdfView) renderPage(canvas *pdf.Canvas, d days.Day) {
+	margin := v.options.Margin
+	padding := v.options.Padding
+	width := v.options.PageWidth
+	height := v.options.PageHeight
 	// page border:
 	canvas.Translate(0, 0)
 	path := new(pdf.Path)
 	path.Move(pdf.Point{margin, margin})
-	path.Line(pdf.Point{pagewidth-margin, margin})
-	path.Line(pdf.Point{pagewidth-margin, pageheight-margin})
-	path.Line(pdf.Point{margin, pageheight-margin})
+	path.Line(pdf.Point{width - margin, margin})
+	path.Line(pdf.Point{width - margin, height - margin})
+	path.Line(pdf.Point{margin, height - margin})
 	path.Line(pdf.Point{margin, margin})
 	canvas.Stroke(path)
 	// text
 	canvas.Translate(margin+padding,
-		pageheight-margin-padding-v.options.FontSize/1.2)
+		height-margin-padding-v.options.FontSize/1.2)
+	var buf bytes.Buffer
+	v.template.Execute(&buf, d)
 	text := new(pdf.Text)
 	text.SetFont(v.options.FontName, v.options.FontSize)
-	text.Text(d.Gregorian().String())
+	text.Text(buf.String())
 	canvas.DrawText(text)
 }

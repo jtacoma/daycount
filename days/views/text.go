@@ -21,22 +21,17 @@ import (
 	"text/template"
 )
 
-var simple = template.Must(
+var textsimple = template.Must(
 	template.New("simple").Parse("{{range .}}{{.Gregorian}}\n{{end}}"))
 
 type TextView struct {
 }
 
-func (*TextView) Run(q Query) (err error) {
-	var t *template.Template
-	if len(q.Template) > 0 {
-		t, err = template.ParseGlob(q.Template)
-		if err != nil {
-			return err
-		}
+func (v *TextView) Run(q Query) (err error) {
+	if t, err := q.LoadTemplate(textsimple); err != nil {
+		return err
 	} else {
-		t = simple
+		t.Execute(os.Stdout, q.Range())
 	}
-	t.Execute(os.Stdout, q.Range())
 	return nil
 }
