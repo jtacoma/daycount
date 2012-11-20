@@ -17,8 +17,9 @@
 package views
 
 import (
-	"github.com/jtacoma/daycount/days"
 	"text/template"
+
+	"github.com/jtacoma/daycount/pkg/days"
 )
 
 type Query struct {

@@ -17,12 +17,14 @@
 package views
 
 import (
-	"bitbucket.org/zombiezen/gopdf/pdf"
 	"bytes"
-	"github.com/jtacoma/daycount/days"
 	"os"
 	"strings"
 	"text/template"
+
+	"bitbucket.org/zombiezen/gopdf/pdf"
+
+	"github.com/jtacoma/daycount/pkg/days"
 )
 
 type PdfView struct {

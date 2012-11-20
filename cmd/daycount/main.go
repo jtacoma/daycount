@@ -19,9 +19,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/jtacoma/daycount/days"
-	"github.com/jtacoma/daycount/days/views"
 	"os"
+
+	"github.com/jtacoma/daycount/pkg/days"
+	"github.com/jtacoma/daycount/pkg/views"
 )
 
 var (

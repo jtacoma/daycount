@@ -17,8 +17,9 @@
 package views
 
 import (
-	"github.com/jtacoma/daycount/days"
 	"testing"
+
+	"github.com/jtacoma/daycount/pkg/days"
 )
 
 func TestRange(t *testing.T) {
