@@ -17,6 +17,7 @@
 package views
 
 import (
+	"io"
 	"text/template"
 
 	"github.com/jtacoma/daycount/pkg/days"
@@ -27,6 +28,7 @@ type Query struct {
 	Start    days.Day
 	Count    int
 	Template string
+	Out      io.Writer
 }
 
 type View interface {

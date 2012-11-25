@@ -43,6 +43,7 @@ func getQuery() *views.Query {
 	command.Count = *count
 	command.Template = *template
 	command.Start, err = days.Parse(*start)
+	command.Out = os.Stdout
 	if err != nil {
 		fmt.Printf("error: failed to parse: %v\n", *start)
 		os.Exit(1)

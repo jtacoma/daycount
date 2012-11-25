@@ -17,7 +17,6 @@
 package views
 
 import (
-	"os"
 	"text/template"
 )
 
@@ -31,7 +30,7 @@ func (v *TextView) Run(q Query) (err error) {
 	if t, err := q.LoadTemplate(textsimple); err != nil {
 		return err
 	} else {
-		t.Execute(os.Stdout, q.Range())
+		t.Execute(q.Out, q.Range())
 	}
 	return nil
 }

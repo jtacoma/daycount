@@ -18,7 +18,6 @@ package views
 
 import (
 	"bytes"
-	"os"
 	"strings"
 	"text/template"
 
@@ -81,7 +80,7 @@ func (v *PdfView) Run(q Query) (err error) {
 		v.renderPage(canvas, day)
 		canvas.Close()
 	}
-	return doc.Encode(os.Stdout)
+	return doc.Encode(q.Out)
 }
 
 func (v *PdfView) renderPage(canvas *pdf.Canvas, d days.Day) {
